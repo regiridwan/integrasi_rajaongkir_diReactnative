@@ -1,0 +1,33 @@
+-- Tabel produk
+CREATE TABLE produk (
+    id_produk INT AUTO_INCREMENT PRIMARY KEY,
+    nama_produk VARCHAR(100) NOT NULL,
+    harga DECIMAL(10, 2) NOT NULL,
+    stok INT NOT NULL,
+    berat DECIMAL(10, 2) NOT NULL,
+    deskripsi TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Tabel pesanan
+CREATE TABLE pesanan (
+    id_pesanan INT AUTO_INCREMENT PRIMARY KEY,
+    id_produk INT,
+    jumlah INT NOT NULL,
+    total_harga DECIMAL(10, 2) NOT NULL,
+    tanggal_pesanan TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('pending', 'processed', 'shipped', 'delivered', 'canceled') DEFAULT 'pending',
+    FOREIGN KEY (id_produk) REFERENCES produk(id_produk) ON DELETE CASCADE
+);
+
+-- Tabel pengiriman
+CREATE TABLE pengiriman (
+    id_pengiriman INT AUTO_INCREMENT PRIMARY KEY,
+    id_pesanan INT,
+    alamat_pengiriman VARCHAR(255) NOT NULL,
+    tanggal_pengiriman TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status_pengiriman ENUM('pending', 'in transit', 'delivered', 'failed') DEFAULT 'pending',
+    kurir VARCHAR(100),
+    FOREIGN KEY (id_pesanan) REFERENCES pesanan(id_pesanan) ON DELETE CASCADE
+);
